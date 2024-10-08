@@ -30,7 +30,7 @@ git commit -m "git 충돌 해결"
 git push origin main
 ```
 
-<br>
+<br><br>
 
 ## 🏝 2단계: 커밋 실수 해결하기
 여러 파일을 수정하면서 각 파일에 대한 커밋 메시지를 개별적으로 작성해야 했지만, 실수로 여러 파일을 모두 같은 커밋 메시지로 작성해버렸습니다. 이 문제를 어떻게 해결할 수 있을까요?
@@ -80,27 +80,49 @@ git push --force origin lv300/<본인 이름>
 ```
 <img width="358" alt="스크린샷 2024-10-03 오후 2 59 16" src="https://github.com/user-attachments/assets/890897ad-41ae-4088-bafe-fa4e9292f145">
 
-<br>
+<br><br>
 
 ## ⛴️ 3단계: Git Reset 실수 복구하기
 실수로 `git reset` 명령어를 잘못 실행하여, 특정 커밋 이후의 작업물들이 사라졌습니다. 이 문제를 어떻게 해결할 수 있을까요?
 
-### ⛴️ 3.1 Git Reset 복구
-**1. Git reflog로 커밋 기록 확인**
-
-다행히 Git은 모든 변경 사항을 기록하고 있으니 이를 복구할 수 있습니다. `git reflog` 명령어를 사용하여 이전 커밋의 기록을 확인합니다.
+### ⛴️ 3.1 Git reflog로 복구
+다행히 Git은 모든 변경 사항을 기록하고 있기에 이를 복구할 수 있습니다. `git reflog` 명령어를 통해 커밋 기록을 확인하여 이를 해결할 수 있습니다.
 ```bash
 git reflog
 ```
-**2. 복구할 커밋으로 돌아가기**
-
-원하는 커밋 해시를 확인한 후, 그 커밋으로 되돌아갑니다.
+- 우선 본인의 브랜치에 이전에 생성했던 `file1.txt` 파일의 내용을 자유롭게 수정해주세요.
+- 다음 명령어를 따라 두 파일 모두 커밋 후 푸시합니다.
 ```bash
-git reset --hard <커밋 해시>
+git add file1.txt
+git commit -m "file1 내용 수정"
+git push origin lv300/<본인 이름>
 ```
-(사진 첨부)
+<img width="333" alt="스크린샷 2024-10-08 오전 10 51 15" src="https://github.com/user-attachments/assets/991e43fb-cf4b-4669-ad0c-6f82aadf5130">
 
-<br>
+- 이제 실수 상황 재현을 위해 `git reset --hard` 명령어를 사용해 이전 커밋으로 되돌아갑니다.
+- `file1.txt`에 대한 작업이 사라지게 되지만, 원격 저장소에는 여전히 해당 커밋이 남아 있습니다.
+```bash
+git reset --hard HEAD~1
+```
+- `git reflog` 명령어를 사용하여 이전 커밋의 기록을 확인하고, 사라진 커밋의 해시 값을 찾습니다.
+```bash
+git reflog
+```
+<img width="465" alt="스크린샷 2024-10-08 오전 10 58 04" src="https://github.com/user-attachments/assets/e8983d24-d032-491c-94b7-204dbe7dcb79">
+
+- `git reset --hard` 명령어를 사용해 사라진 커밋으로 돌아갑니다. 이를 통해 `file2.txt`의 작업이 복구됩니다.
+```bash
+git reset --hard <복구할 커밋 해시>
+```
+<img width="299" alt="스크린샷 2024-10-08 오전 11 02 50" src="https://github.com/user-attachments/assets/bf17f43b-f5fc-4478-a98f-97300464e2f0">
+
+- 로컬 저장소와 원격 저장소의 상태가 다르기 때문에, 강제로 푸시하여 복구된 내용을 원격 저장소에 반영합니다.
+```bash
+git push --force origin lv300/<본인 이름>
+```
+<img width="295" alt="스크린샷 2024-10-08 오전 11 04 05" src="https://github.com/user-attachments/assets/13914823-5654-4988-a114-a672491d1326">
+
+<br><br>
 
 ## 🏖️ 4단계: Gitignore의 중요성
 API 키나 비밀번호와 같은 중요한 정보를 실수로 깃허브에 올리면 어떻게 될까요? 이를 방지하기 위해 gitignore 파일을 사용하는 방법을 배워봅시다.
